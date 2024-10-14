@@ -1,5 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Runtime.InteropServices;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace CapsLockNote
@@ -11,13 +14,18 @@ namespace CapsLockNote
 
         const int VK_CAPITAL = 0x14;
         private static bool _isCapsLockOn = false;
-        private static CapsNotifier _currentNotifier;
 
+
+
+        /// <summary>
+        /// The main entry point for the application.
+        /// </summary>
         [STAThread]
         static void Main()
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
+
 
             _isCapsLockOn = IsCapsLockOn();
 
@@ -34,20 +42,11 @@ namespace CapsLockNote
             bool currentCapsLockState = IsCapsLockOn();
             if (currentCapsLockState != _isCapsLockOn)
             {
-                // Caps Lock state has changed
+
                 _isCapsLockOn = currentCapsLockState;
 
-                string message = _isCapsLockOn ? "AA\nCAPS LOCK ON" : "aa\ncaps lock off";
-
-                // Close the current notification if it exists
-                if (_currentNotifier != null && !_currentNotifier.IsDisposed)
-                {
-                    _currentNotifier.Close();
-                }
-
-                // Show new notification
-                _currentNotifier = new CapsNotifier(message);
-                _currentNotifier.Show();
+                string message = _isCapsLockOn ? "CAPS LOCK ON" : "caps lock off";
+                ShowCapsNotification(message);
             }
         }
 
@@ -55,5 +54,13 @@ namespace CapsLockNote
         {
             return (GetKeyState(VK_CAPITAL) & 0x0001) != 0;
         }
+
+        private static void ShowCapsNotification(string message)
+        {
+            CapsNotifier notifierForm = new CapsNotifier(message);
+            notifierForm.Show();
+        }
+
+
     }
 }
